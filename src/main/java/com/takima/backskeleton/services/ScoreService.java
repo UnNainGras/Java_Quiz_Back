@@ -24,8 +24,13 @@ public class ScoreService {
         return scoreDao.findAll();
     }
 
-    public Score saveScore(Score score) {
-        return scoreDao.save(score);
+    public Optional<Score> findScoreById(Long id) {
+        return scoreDao.findById(id);
+    }
+
+    public ScoreDTO saveScore(Score score) {
+        Score savedScore = scoreDao.save(score);
+        return toDTO(savedScore); // Convertir en ScoreDTO avant de retourner
     }
 
     public void deleteScore(Long id) {
@@ -34,15 +39,10 @@ public class ScoreService {
 
     // Méthode de conversion vers ScoreDTO
     public ScoreDTO toDTO(Score score) {
-        return new ScoreDTO(score.getId(), score.getScore());
+        return new ScoreDTO(score.getId(), score.getScore(), score.getDate(), score.getUser().getId());
     }
 
     public List<ScoreDTO> toDTOs(List<Score> scores) {
         return scores.stream().map(this::toDTO).collect(Collectors.toList());
     }
-
-    public Optional<Score> findScoreById(Long id) {
-        return scoreDao.findById(id);
-    }
-
 }

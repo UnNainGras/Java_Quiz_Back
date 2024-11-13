@@ -1,18 +1,23 @@
 package com.takima.backskeleton.DTO;
 
+import java.util.List;
+
 public class QuestionDTO {
     private Long id;
     private String question;
+    private List<String> reponses;
     private String reponseCorrecte;
+    private Long adminId; // Utilise l'ID de l'Admin
 
     // Constructeurs, Getters et Setters
-    public QuestionDTO() {
-    }
+    public QuestionDTO() {}
 
-    public QuestionDTO(Long id, String question, String reponseCorrecte) {
+    public QuestionDTO(Long id, String question, List<String> reponses, String reponseCorrecte, Long adminId) {
         this.id = id;
         this.question = question;
+        this.reponses = reponses;
         this.reponseCorrecte = reponseCorrecte;
+        this.adminId = adminId;
     }
 
     public Long getId() {
@@ -31,11 +36,27 @@ public class QuestionDTO {
         this.question = question;
     }
 
+    public List<String> getReponses() {
+        return reponses;
+    }
+
+    public void setReponses(List<String> reponses) {
+        this.reponses = reponses;
+    }
+
     public String getReponseCorrecte() {
         return reponseCorrecte;
     }
 
     public void setReponseCorrecte(String reponseCorrecte) {
         this.reponseCorrecte = reponseCorrecte;
+    }
+
+    public Long getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(Long adminId) {
+        this.adminId = adminId;
     }
 }

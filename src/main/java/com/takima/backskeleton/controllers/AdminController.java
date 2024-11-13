@@ -38,10 +38,13 @@ public class AdminController {
         return adminService.toDTO(adminService.saveAdmin(admin));
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAdmin(@PathVariable Long id) {
-        adminService.deleteAdmin(id);
-        return ResponseEntity.noContent().build();
+        if (adminService.findAdminById(id).isPresent()) {
+            adminService.deleteAdmin(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.takima.backskeleton.services;
 
 import com.takima.backskeleton.DTO.QuestionDTO;
 import com.takima.backskeleton.models.Question;
+import com.takima.backskeleton.models.QuestionReponse;
 import com.takima.backskeleton.DAO.QuestionDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,9 @@ public class QuestionService {
         return questionDao.findById(id);
     }
 
-    public Question saveQuestion(Question question) {
-        return questionDao.save(question);
+    public QuestionDTO saveQuestion(Question question) {
+        Question savedQuestion = questionDao.save(question);
+        return toDTO(savedQuestion); // Convertir en QuestionDTO avant de retourner
     }
 
     public void deleteQuestion(Long id) {
@@ -38,7 +40,17 @@ public class QuestionService {
 
     // Méthode de conversion vers QuestionDTO
     public QuestionDTO toDTO(Question question) {
-        return new QuestionDTO(question.getId(), question.getQuestion(), question.getReponseCorrecte());
+        List<String> reponses = question.getQuestionReponses().stream()
+                .map(QuestionReponse::getReponse)
+                .collect(Collectors.toList());
+
+        return new QuestionDTO(
+                question.getId(),
+                question.getQuestion(),
+                reponses,
+                question.getReponseCorrecte(),
+                question.getAdmin().getId()
+        );
     }
 
     public List<QuestionDTO> toDTOs(List<Question> questions) {

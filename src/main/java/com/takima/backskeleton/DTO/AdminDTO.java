@@ -6,8 +6,7 @@ public class AdminDTO {
     private String email;
 
     // Constructeurs, Getters et Setters
-    public AdminDTO() {
-    }
+    public AdminDTO() {}
 
     public AdminDTO(Long id, String nom, String email) {
         this.id = id;
