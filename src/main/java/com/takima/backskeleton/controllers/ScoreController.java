@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/scores")
 public class ScoreController {
@@ -41,12 +42,13 @@ public class ScoreController {
         score.setScore(scoreDTO.getScore());
         score.setDate(scoreDTO.getDate());
 
-        // Associe l'utilisateur par son ID si l'utilisateur existe
+        // Valider et associer l'utilisateur
         userService.findUserById(scoreDTO.getUserId())
-                .ifPresentOrElse(score::setUser,
-                        () -> { throw new RuntimeException("User not found"); });
+                .ifPresentOrElse(
+                        score::setUser,
+                        () -> { throw new RuntimeException("User with ID " + scoreDTO.getUserId() + " not found"); }
+                );
 
-        // saveScore renvoie maintenant un ScoreDTO directement
         ScoreDTO savedScoreDTO = scoreService.saveScore(score);
         return ResponseEntity.ok(savedScoreDTO);
     }

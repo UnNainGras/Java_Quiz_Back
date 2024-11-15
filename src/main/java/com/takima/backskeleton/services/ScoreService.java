@@ -39,6 +39,9 @@ public class ScoreService {
 
     // Méthode de conversion vers ScoreDTO
     public ScoreDTO toDTO(Score score) {
+        if (score.getUser() == null) {
+            throw new RuntimeException("User is null for score ID: " + score.getId());
+        }
         return new ScoreDTO(score.getId(), score.getScore(), score.getDate(), score.getUser().getId());
     }
 

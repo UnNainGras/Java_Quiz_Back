@@ -7,11 +7,12 @@ public class QuestionDTO {
     private String question;
     private List<String> reponses;
     private String reponseCorrecte;
-    private Long adminId; // Utilise l'ID de l'Admin
+    private Long adminId;
 
-    // Constructeurs, Getters et Setters
+    // Constructeur par défaut
     public QuestionDTO() {}
 
+    // Constructeur avec paramètres
     public QuestionDTO(Long id, String question, List<String> reponses, String reponseCorrecte, Long adminId) {
         this.id = id;
         this.question = question;
@@ -20,6 +21,7 @@ public class QuestionDTO {
         this.adminId = adminId;
     }
 
+    // Getters et Setters
     public Long getId() {
         return id;
     }

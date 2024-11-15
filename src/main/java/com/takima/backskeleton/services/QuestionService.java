@@ -21,38 +21,41 @@ public class QuestionService {
         this.questionDao = questionDao;
     }
 
+    // Récupérer toutes les questions
     public List<Question> findAllQuestions() {
         return questionDao.findAll();
     }
 
+    // Trouver une question par ID
     public Optional<Question> findQuestionById(Long id) {
         return questionDao.findById(id);
     }
 
+    // Sauvegarder une question et renvoyer un DTO
     public QuestionDTO saveQuestion(Question question) {
         Question savedQuestion = questionDao.save(question);
-        return toDTO(savedQuestion); // Convertir en QuestionDTO avant de retourner
+        return toDTO(savedQuestion);
     }
 
+    // Supprimer une question par ID
     public void deleteQuestion(Long id) {
         questionDao.deleteById(id);
     }
 
-    // Méthode de conversion vers QuestionDTO
+    // Convertir une Question en QuestionDTO
     public QuestionDTO toDTO(Question question) {
-        List<String> reponses = question.getQuestionReponses().stream()
-                .map(QuestionReponse::getReponse)
-                .collect(Collectors.toList());
-
         return new QuestionDTO(
                 question.getId(),
                 question.getQuestion(),
-                reponses,
+                question.getQuestionReponses().stream()
+                        .map(QuestionReponse::getReponse)
+                        .collect(Collectors.toList()),
                 question.getReponseCorrecte(),
-                question.getAdmin().getId()
+                question.getAdmin() != null ? question.getAdmin().getId() : null
         );
     }
 
+    // Convertir une liste de questions en liste de DTOs
     public List<QuestionDTO> toDTOs(List<Question> questions) {
         return questions.stream().map(this::toDTO).collect(Collectors.toList());
     }

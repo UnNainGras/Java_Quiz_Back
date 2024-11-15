@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/questions")
 public class QuestionController {
@@ -26,11 +27,17 @@ public class QuestionController {
         this.adminService = adminService;
     }
 
+    /**
+     * Récupère toutes les questions sous forme de DTO.
+     */
     @GetMapping
     public List<QuestionDTO> getAllQuestions() {
         return questionService.toDTOs(questionService.findAllQuestions());
     }
 
+    /**
+     * Récupère une question par ID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<QuestionDTO> getQuestionById(@PathVariable Long id) {
         return questionService.findQuestionById(id)
@@ -38,12 +45,16 @@ public class QuestionController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
+     * Crée une nouvelle question avec les réponses associées.
+     */
     @PostMapping
     public ResponseEntity<QuestionDTO> createQuestion(@RequestBody QuestionDTO questionDTO) {
+        // Récupérer l'admin à partir de son ID
         Admin admin = adminService.findAdminById(questionDTO.getAdminId())
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
 
-        // Créer la question sans les réponses
+        // Créer une nouvelle question
         Question question = new Question(questionDTO.getQuestion(), questionDTO.getReponseCorrecte());
         question.setAdmin(admin);
 
@@ -52,13 +63,17 @@ public class QuestionController {
                 .map(reponse -> new QuestionReponse(reponse, question))
                 .collect(Collectors.toList());
 
+        // Associer les réponses à la question
         question.setQuestionReponses(questionReponses);
 
-        // Sauvegarder la question
+        // Sauvegarder la question et retourner le DTO correspondant
         QuestionDTO savedQuestionDTO = questionService.saveQuestion(question);
         return ResponseEntity.ok(savedQuestionDTO);
     }
 
+    /**
+     * Supprime une question par ID.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
         questionService.deleteQuestion(id);
